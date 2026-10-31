@@ -70,6 +70,20 @@ The stated model is `SARIMA(2,1,3)(1,1,3)[12]`. In lag-operator notation, differ
 
 **Audit notes.** The displayed sorted AIC table's first row is **(1,0,2,3), AIC 26.6187**, while the narrative selects **(2,3,1,3)** and the subsequent fitted model has AIC **276.234**. The ranking, fit convergence, and chosen specification need reconciliation. The seasonal-differencing cell calls `np.diff(y_diff, n=12)`, a **twelfth-order consecutive difference**, not a lag-12 seasonal difference; it does not directly justify `D=1`. The Ljung–Box narrative treats nonrejection as proof of independent residuals; it only means the test did not find enough evidence of serial correlation at the tested lags. Neither model runtime nor result was reproduced here.
 
+### Corrected companion (newly executed, restricted model)
+
+The separate [corrected notebook](<Forecasting of Antidiabetic Drug Prescriptions - Corrected.ipynb>) explains the [standard-library runner and data acquisition](forecasting/README.md). It leaves the original notebook and saved outputs intact. The runner was executed with Python 3.14.5 on the exact source CSV, verified by SHA-256; the CSV is not committed. It writes [individual predictions and metrics](forecasting/corrected_results.json) and a [forecast plot](forecasting/rolling_forecasts.svg). Notebook code cells were smoke-tested sequentially with Python, but no Jupyter kernel or saved notebook outputs were used.
+
+Here seasonal differencing is explicitly `z[t] = y[t] - y[t-1] - y[t-12] + y[t-13]`, or `(1-B)(1-B^12)y[t]`. The first 168 months choose `p` from a predeclared `SARIMA(p,1,0)(0,1,0)[12]` family, `p=0,1,2`, with an intercept in the differenced equation. Conditional least squares fits each candidate on the same 153 transformed observations. The conditional Gaussian AIC, with the same omitted constant in each fit, selects `p=2` on training data alone; it is **not comparable numerically** with the original statsmodels exact-likelihood AIC. At origins 168, 180 and 192, the selected order is refitted using only observations then available and forecasts the next 12 months. Ordinary naive and seasonal naive predict the same 36 targets.
+
+| Freshly calculated 36-month rolling holdout | MAE | RMSE | MAPE |
+| --- | ---: | ---: | ---: |
+| Ordinary naive | 3.178 | 4.148 | 14.545% |
+| Seasonal naive | 2.658 | 3.154 | 12.687% |
+| Restricted conditional SARIMA(2,1,0)(0,1,0)[12] | **1.795** | **2.156** | **8.869%** |
+
+The corrected model has lower error on these three annual windows, but this is one short holdout on one series. It does not reproduce the original 625-model search or its 7.8988% saved MAPE; no confidence-interval coverage or prospective performance claim is established. Focused tests check lag-12 differencing, common AIC sample length, metric arithmetic and first-origin isolation from future values.
+
 ## 5. Bank churn prediction
 
 The [churn notebook](BankChurnPrediction.ipynb) models `Exited` from a 10,000-row bank customer CSV loaded from an external/local path. It drops row ID, customer ID, and surname; removes IQR outliers from credit score and age (saved modelling sample **9,626**); encodes gender and geography; makes an 80/20 **stratified** split; and fits a standard scaler on training data. It compares dense Keras networks with SGD, Adam, dropout, grid-tuned settings, and a train-only SMOTE variant.
