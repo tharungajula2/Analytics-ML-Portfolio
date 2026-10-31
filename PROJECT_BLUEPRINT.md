@@ -119,6 +119,25 @@ The baseline net minimizes binary cross-entropy `−[y log p + (1−y) log(1−p
 
 Outlier removal and category encoding occur before splitting; the former uses full-data quantiles. More seriously, all networks use `X_test, y_test` as `validation_data` during training and the same set for model comparison, so the reported test metrics are no longer an untouched final evaluation. No temporal validation or calibration is shown. The input CSV is absent.
 
+### Corrected churn reference
+
+The separate [corrected guide](churn_corrected/README.md) and [pipeline](churn_corrected/pipeline.py) keep the historical notebook intact. The original CSV is not in this repository, so the corrected framework has **synthetic software-test evidence only** and no reproduced bank-customer metrics. It requires the notebook's 14-column `churn.csv` contract, excludes row/customer identifiers and surname, and splits rows **60/20/20, stratified**, before fitting any transformation. This is a row-based evaluation because the source has no observation or exit dates; it cannot establish prospective performance or application-time feature availability.
+
+```mermaid
+flowchart LR
+  A[Authorized local CSV] --> B[Schema validation]
+  B --> C[Stratified train / validation / test]
+  C --> D[Train-fitted scaler and one-hot encoder]
+  D --> E[Four regularized logistic candidates]
+  E --> F[Validation average precision selects model]
+  F --> G[Validation F1 selects threshold]
+  G --> H[Single final test evaluation]
+  C --> I[Train-prevalence baseline]
+  I --> H
+```
+
+For logistic regression, `p = 1/(1+exp(−(β₀+βᵀx)))`. `class_weight="balanced"` is considered alongside unweighted fits; regularization strengths `C = 0.1, 1` are fixed before evaluation. Validation average precision (stepwise PR-AUC) selects the model, Brier score breaks ties, and validation F1 selects a threshold from 0.10 to 0.90 in steps of 0.05. The prevalence-only baseline and selected model are assessed on the same untouched test rows using ROC-AUC, average precision, precision, recall, F1, `[TN, FP, FN, TP]`, Brier score and descriptive calibration bins. The selected threshold expresses an F1 tradeoff, **not** an optimized retention budget or calibrated business policy. Class weighting may distort probabilities; final calibration requires real-data evidence. Ordinary SMOTE is omitted because interpolating scaled one-hot indicators can create impossible categories; any later categorical-aware sampler must be fitted inside training folds. The [synthetic tests](churn_corrected/test_pipeline.py) verify split isolation, train-fitted preprocessing, unknown categories, metric arithmetic, threshold choice and repeatability.
+
 ## 6. CartPole reinforcement learning
 
 The [CartPole capstone folder](<Capstone_IISC_Reinforcement Learning - CartPole Optimization (IISc Capstone)>) is one **experiment family**, not 29 unrelated projects. [Baseline EDA](<Capstone_IISC_Reinforcement Learning - CartPole Optimization (IISc Capstone)/1.1 Base RL & EDA.ipynb>) and [reward trials](<Capstone_IISC_Reinforcement Learning - CartPole Optimization (IISc Capstone)/2.3 Final Custom Reward and its integration into algorithms.ipynb>) explore position/angle shaping, REINFORCE baselines, entropy, and PPO/DQN variants. [Weight tuning](<Capstone_IISC_Reinforcement Learning - CartPole Optimization (IISc Capstone)/2.4 REINFORCE_custom_rewards_weight_tuningnov28.ipynb>) extends the trials. Four directories contain paired v0/v1 and with/without custom-reward runs:
