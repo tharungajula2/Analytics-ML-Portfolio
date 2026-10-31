@@ -4,6 +4,7 @@ import copy
 import json
 import math
 import unittest
+import xml.etree.ElementTree as ET
 from pathlib import Path
 from unittest.mock import patch
 
@@ -11,6 +12,7 @@ import numpy as np
 import torch
 
 from cartpole_corrected import experiment as e
+from cartpole_corrected import plot
 
 
 CONFIG = json.loads(Path(e.__file__).with_name("config.json").read_text(encoding="utf-8"))
@@ -116,6 +118,14 @@ class ExperimentTests(unittest.TestCase):
         self.assertEqual(summary["environment_reward"][-1]["mean"], 15.0)
         self.assertEqual(summary["paired_difference_summary"]["mean"], -1.0)
         self.assertEqual([p["shaped_minus_original"] for p in summary["paired_final_differences"]], [3.0, -5.0])
+
+    def test_saved_plot_matches_real_result_json(self):
+        directory = Path(e.__file__).parent
+        result = json.loads((directory / "results.json").read_text(encoding="utf-8"))
+        saved = (directory / "learning_curve.svg").read_text(encoding="utf-8")
+        self.assertEqual(saved, plot.svg(result))
+        root = ET.fromstring(saved)
+        self.assertTrue(root.tag.endswith("svg"))
 
 
 if __name__ == "__main__":

@@ -46,6 +46,10 @@ The table uses **one mean evaluation score per training seed** (ten episodes eac
 
 The random-action baseline averaged **25.94 ± 4.55** across five action streams. At 8,000 interactions, the shaped-minus-original paired mean is **+11.92**, with **SD 36.66** across training seeds. Individual paired differences are `+30.0, −35.0, −12.7, +58.8, +18.5`; two of five seeds favor original-reward training. The experiment shows learning above the random baseline for these settings, and substantial seed variability. It **does not establish a reliable shaping advantage** or that either approach solves the 200-step task. In particular, saved historical near-ceiling scores from much longer or differently stopped runs should not be compared as if they shared this budget.
 
+![Mean original-reward evaluation by training interactions, with one standard deviation across seeds](learning_curve.svg)
+
+The [SVG plot](learning_curve.svg) is generated directly from `results.json` by the dependency-free [plot script](plot.py). Its points and error bars reproduce the table; the baseline line shows the random-action mean. Error bars show **SD across five training seeds**, not uncertainty intervals.
+
 ## Reproduce and inspect
 
 Use Python 3.14 and the pinned [requirements](requirements.txt). PyTorch is the largest dependency. The run used Windows CPU with Python 3.14.5, Gymnasium 1.1.1, NumPy 2.5.4 and PyTorch 2.13.0+cpu; Gymnasium was installed in a local ignored directory, and no dependency files were committed. In a clean environment from the repository root:
@@ -54,9 +58,10 @@ Use Python 3.14 and the pinned [requirements](requirements.txt). PyTorch is the 
 python -m pip install -r cartpole_corrected/requirements.txt
 python -m unittest cartpole_corrected.test_experiment -v
 python -m cartpole_corrected.experiment --config cartpole_corrected/config.json --output cartpole_corrected/local-results.json
+python -m cartpole_corrected.plot --input cartpole_corrected/local-results.json --output cartpole_corrected/local-learning-curve.svg
 ```
 
-Compare the local JSON with [`results.json`](results.json): its config, library versions, per-seed checkpoint scores and aggregate summaries are explicit. A rerun can differ across hardware or library builds even with fixed seeds; preserve the local output and report deviations. The seven focused tests cover reward symmetry/formula, discounted returns, disjoint seeds, original-reward evaluation, no evaluation RNG draw, equal interaction budgets/checkpoints, and per-seed aggregation. A separate read-only check recomputed every saved per-seed mean, cross-seed SD and paired difference from the raw episode scores. No hyperparameter search or historical notebook execution was performed.
+Compare the local JSON with [`results.json`](results.json): its config, library versions, per-seed checkpoint scores and aggregate summaries are explicit. A rerun can differ across hardware or library builds even with fixed seeds; preserve the local output and report deviations. Eight focused tests cover reward symmetry/formula, discounted returns, disjoint seeds, original-reward evaluation, no evaluation RNG draw, equal interaction budgets/checkpoints, per-seed aggregation, and plot/result agreement. A separate read-only check recomputed every saved per-seed mean, cross-seed SD and paired difference from the raw episode scores. No hyperparameter search or historical notebook execution was performed.
 
 ## Limits and interview-safe interpretation
 
