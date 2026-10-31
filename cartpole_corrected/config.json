@@ -1,0 +1,12 @@
+{
+  "environment": "CartPole-v1",
+  "max_episode_steps": 200,
+  "training_steps": 8000,
+  "checkpoints": [0, 2000, 4000, 6000, 8000],
+  "training_seeds": [11, 23, 37, 41, 53],
+  "evaluation_seeds": [900000, 900001, 900002, 900003, 900004, 900005, 900006, 900007, 900008, 900009],
+  "gamma": 0.99,
+  "hidden_units": 128,
+  "learning_rate": 0.001,
+  "position_weight": 0.15
+}
