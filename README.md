@@ -1,87 +1,37 @@
-# Analytics & Quantitative Projects
+# Analytics & ML Portfolio
 
-Applied machine learning and quantitative modelling on financial, banking and time-series data. Each project is a Jupyter notebook taken end to end, from raw data through to validated results.
+Applied analysis across credit risk, time series, customer behaviour, text, and reinforcement learning. This repository is a collection of **separate notebook studies**, plus a small synthetic banking analytics prototype. The notebooks retain their original code and saved outputs; the results below are **reported in those outputs, not rerun for this documentation**.
 
-**Portfolio:** [tharungajula.vercel.app](https://tharungajula.vercel.app) · **Credit risk system:** [retail-credit-risk](https://github.com/tharungajula2/retail-credit-risk)
-
----
+**Start with the [technical blueprint](PROJECT_BLUEPRINT.md)** for data flow, mathematical foundations, evaluation, reproducibility notes, and limitations.
 
 ## Featured work
 
-### Bank Customer Churn, Neural Network
-Customer attrition on a 10,000-customer retail banking dataset, built in Keras across five model variants: SGD, Adam, dropout, hyperparameter tuning, and SMOTE for class imbalance.
+| Project | What the source implements | Evidence and reading path |
+| --- | --- | --- |
+| [Credit risk PD model and scorecard](<Capstone_NIBM_Credit Risk Modeling (PD Scorecard)/2_PD Model & Scorecard.ipynb>) | LendingClub loan preparation, good/bad target, grouped risk bands, weight of evidence and information value exploration, logistic regression, test ROC/KS, and a points scorecard. | Saved test output: **AUROC 0.6883**, Gini **0.3766**, KS **0.2790**. Begin with [data preparation](<Capstone_NIBM_Credit Risk Modeling (PD Scorecard)/1_Data-Preparation.ipynb>); the source CSV and intermediate exports are absent. |
+| [Antidiabetic prescription forecasting](<Forecasting of Antidiabetic Drug Prescriptions.ipynb>) | Monthly series exploration, STL, stationarity checks, SARIMA search, residual diagnostics, and three rolling 12-month forecasts against a seasonal baseline. | Saved 36-month holdout MAPE: **7.90% SARIMA** versus **12.69% seasonal naive**. The notebook's AIC ranking and seasonal differencing code need review; see the [blueprint](PROJECT_BLUEPRINT.md#4-forecasting-antidiabetic-prescriptions). |
+| [Bank churn neural networks](BankChurnPrediction.ipynb) | EDA, stratified split, scaled features, SGD/Adam/dropout/tuned Keras models, and training-only SMOTE. | Saved test output for SGD: churn recall **0.48**, precision **0.79**, ROC-AUC **0.8533**. The SMOTE variant reports recall **0.75** and precision **0.51**; repeated use of the test set limits the comparison. |
+| [CartPole reward-shaping study](<Capstone_IISC_Reinforcement Learning - CartPole Optimization (IISc Capstone)/2.3 Final Custom Reward and its integration into algorithms.ipynb>) | A connected experiment series comparing standard and custom rewards across CartPole v0/v1, with DQN, policy gradient, actor–critic, PPO, twin-Q DDPG adaptation, and SAC implementations. | Twenty-four paired algorithm notebooks retain training and test output. Results are exploratory single-run comparisons, not a controlled benchmark. [Experiment map](PROJECT_BLUEPRINT.md#6-cartpole-reinforcement-learning). |
+| [Employee retention modelling](<Employee Retention & Performance Analytics.ipynb>) | Logistic regression, decision tree, random forest, grid search, and separate feature sets on an HR attrition dataset. | Saved logistic test recall for leavers **0.26**; a random-forest feature-set variant reports test F1 **0.894**. The notebook labels ROC-AUC computed from hard predictions as “AUC.” |
 
-Churn recall improved from 0.48 to 0.75 after SMOTE. Precision fell from 0.79 to 0.51 and accuracy from 0.87 to 0.80, while ROC-AUC held near 0.85 across all five variants.
+## More analyses
 
-The point is not that SMOTE improved the model. It is that the metric worth optimising depends on the cost of the decision. For retention outreach, missing a churner costs more than contacting a non-churner, so recall wins and the precision cost is accepted deliberately.
+| Project | Implemented scope |
+| --- | --- |
+| [Household rural/urban classification](Socio_Economic_Household_Classification.ipynb) | Survey EDA, feature engineering, logistic/tree/ANN/forest/XGBoost variants, SMOTE, weighting, PCA, and voting. Saved output includes a tuned forest test accuracy of **0.8356**; feature selection and repeated test comparisons need caution. |
+| [Airline tweet sentiment](<Twitter Sentiment Analysis with NLP.ipynb>) | Text cleaning, count and TF-IDF vectors, random forests, five-fold CV and test reports. Saved count-vector test accuracy is **0.77**; vectorizers were fitted before the split. |
+| [Social media use and stress](1_OTHER%20PROJECTS/SocialMediavsStress.ipynb) | Correlation and OLS models with gender interaction for stress and anxiety scores; 99 observations appear in saved output. Source CSVs are absent. |
+| [Mall customer segmentation](<1_OTHER PROJECTS/102_Customer Segmentation_K-Means Clustering.ipynb>) | Two-feature K-means, within-cluster sum of squares elbow plot, and five cluster visualisation. |
+| [IMDb scraping and analysis](<1_OTHER PROJECTS/IMDb Movie Data – Web Scraping & Analysis.ipynb>) | Requests/BeautifulSoup extraction, cleaning, and descriptive plots for a saved 1,000-film result. Site content may change. |
+| [Synthetic ALM engine](ALM_Project/README.md) | Python scripts generate simulated assets/liabilities and calculate repricing gaps, a +100 bp NII shock, and a simplified LCR. Saved reports are examples, not live bank results. |
+| [Synthetic small-finance-bank data lab](sfb-risk-lab/data/README.md) | A small customer/loan/payment schema, example CSVs, and key-integrity quick check; no trained risk model. |
+| [COVID-19 tweet BERT draft](<1_OTHER PROJECTS/Multiclass_classification_model_to_predict_the_sentiment_of_Covid_19_tweets.ipynb>) | BERT fine-tuning and prediction code is present, with **no saved execution or evaluation output**. |
+| [Portfolio optimisation PDF](<1_OTHER PROJECTS/104_Portfolio Optimization_MPT.pdf>) | A standalone document; no NIFTY data, price-fetching script, optimization notebook, or reproducible result is present here. |
 
-**Techniques:** Keras, class imbalance handling, SMOTE, optimiser comparison, dropout regularisation, ROC-AUC and recall-focused evaluation.
+## Repository guide
 
----
+The [PROJECT_BLUEPRINT.md](PROJECT_BLUEPRINT.md) explains each workflow, formulas, validation boundaries, and practical next steps. Notebooks are independent except the two-stage credit-risk capstone and the CartPole experiment family. Most input datasets are **not committed** and several notebooks use author-specific Windows or Colab paths. There is no root lockfile or unified runner. Open a notebook to inspect saved results; to reproduce one, obtain its cited data, replace local paths, create a compatible environment, and run it deliberately in a fresh kernel. The ALM example has its own [setup guide](ALM_Project/README.md).
 
-### Antidiabetic Drug Prescription Forecasting
-Monthly prescription volumes over 204 observations from July 1991 to June 2008, split 168 training and 36 test, evaluated through rolling 12-month forecasts.
+## Tools demonstrated
 
-STL decomposition and ADF stationarity testing, followed by regular and seasonal differencing, then model selection across 625 candidate SARIMA structures.
-
-| Model | MAPE |
-|---|---|
-| Naive seasonal baseline | 12.69% |
-| SARIMA(2,1,3)(1,1,3)₁₂ | **7.90%** |
-
-The discipline transfers directly to loss forecasting, provisioning workflows and collections volume planning.
-
-**Techniques:** STL decomposition, ADF testing, differencing, SARIMA grid search, rolling forecast validation, baseline comparison.
-
----
-
-### NIFTY 100 Portfolio Optimisation
-Modern Portfolio Theory applied to NIFTY 100 constituents. Adjusted close prices from Yahoo Finance over a three-year lookback, reduced to 82 usable stocks after download failures and missing-value handling, giving a 609 × 82 return matrix.
-
-Log returns, annualised mean returns and a covariance matrix, then 10,000 randomly generated weight vectors used to trace the efficient frontier and select on return over volatility. Equal weight across the 82 stocks returns 9.6% at 4.77% variance, used as the comparison baseline.
-
-This is MPT implemented honestly. It is not an institutional portfolio construction engine: there is no factor model, no sector neutrality, no transaction cost model and no rebalancing backtest.
-
-**Techniques:** log returns, covariance estimation, Monte Carlo weight generation, Sharpe ratio selection, efficient frontier construction.
-
----
-
-### Reference notes
-Written technical references built alongside the modelling work, covering regression analysis, machine learning methods, a Python data analytics reference, regulatory foundations, and a quantitative modelling workflow reference.
-
-These exist because being able to explain the work matters as much as producing it.
-
----
-
-## The credit risk system lives elsewhere
-
-The retail credit risk work outgrew this repository and has its own home:
-
-**[github.com/tharungajula2/retail-credit-risk](https://github.com/tharungajula2/retail-credit-risk)**
-
-An end-to-end system on 466,285 loans from the public LendingClub dataset. PD scorecard with WoE and IV binning, two-stage LGD across 50,968 defaults, EAD, Expected Loss, IFRS 9 and Ind AS 109 ECL staging with SICR criteria and lifetime PD term structures, Basel III Advanced IRB capital, and a full validation and monitoring suite.
-
----
-
-## Also in this repository
-
-Earlier work kept for completeness rather than featured: employee attrition classification, socio-economic household classification, Twitter sentiment analysis, and a CartPole reinforcement learning comparison. These were built while learning the respective methods.
-
----
-
-## Data
-
-Every dataset used here is public. Sources include Kaggle, Yahoo Finance and published open datasets. No proprietary, client or employer data appears anywhere in this repository.
-
----
-
-## Stack
-
-Python, pandas, NumPy, scikit-learn, statsmodels, Keras, imbalanced-learn, XGBoost, yfinance, matplotlib, seaborn, Jupyter.
-
----
-
-## Contact
-
-Tharun Gajula · Bengaluru, India
-[tharun.gajula.2@gmail.com](mailto:tharun.gajula.2@gmail.com) · [LinkedIn](https://linkedin.com/in/tharungajula) · [Portfolio](https://tharungajula.vercel.app)
+Python, pandas, NumPy, scikit-learn, statsmodels, TensorFlow/Keras, PyTorch, XGBoost, imbalanced-learn, BeautifulSoup, Matplotlib, Seaborn, and Jupyter. Tools vary by project; this is not a single installable package.

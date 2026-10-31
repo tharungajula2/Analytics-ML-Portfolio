@@ -1,6 +1,8 @@
 
 # ALM & Treasury Analytics Engine for Indian Banking
 
+> **Scope note:** This is a synthetic proof of concept. The generated asset/liability CSVs are not committed, and the saved report values are example outputs. The implemented NII and LCR calculations are simplified, not regulatory-grade bank measures. See the repository [technical blueprint](../PROJECT_BLUEPRINT.md#10-synthetic-banking-prototypes-and-portfolio-pdf) for code-grounded assumptions and limitations.
+
 [![Python 3.11](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/downloads/release/python-311/)
 [![Pandas](https://img.shields.io/badge/pandas-2.2-blue)](https://pandas.pydata.org/)
 [![NumPy](https://img.shields.io/badge/numpy-1.26-blue)](https://numpy.org/)

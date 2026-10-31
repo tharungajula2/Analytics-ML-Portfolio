@@ -1,5 +1,7 @@
 # Business Requirement Document: Automated ALM Reporting & Analytics
 
+> **Historical simulation:** This records requirements for a fictional banking scenario. Consult the repository [technical blueprint](../../PROJECT_BLUEPRINT.md#10-synthetic-banking-prototypes-and-portfolio-pdf) and source scripts for what is actually implemented.
+
 - **Project:** Automated ALM Reporting & NII Sensitivity Analysis
 - **Client:** Indus National Bank (INB)
 - **Version:** 1.0

@@ -1,5 +1,7 @@
 # Functional Requirement Document: ALM Analytical Engine
 
+> **Historical simulation:** This specification describes intended behaviour; implementation and regulatory completeness should be checked against the [technical blueprint](../../PROJECT_BLUEPRINT.md#10-synthetic-banking-prototypes-and-portfolio-pdf) and source scripts.
+
 - **Project:** Automated ALM Reporting & NII Sensitivity Analysis
 - **Client:** Indus National Bank (INB)
 - **Version:** 1.0
