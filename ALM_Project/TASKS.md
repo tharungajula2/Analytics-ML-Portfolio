@@ -1,5 +1,7 @@
 # ALM Project Sprint Backlog
 
+> **Historical backlog:** Checkbox state is not an implementation audit. See the repository [technical blueprint](../PROJECT_BLUEPRINT.md#10-synthetic-banking-prototypes-and-portfolio-pdf) and source scripts for current scope.
+
 ## To Do
 
 - [ ] Create Business Requirement Document (BRD)

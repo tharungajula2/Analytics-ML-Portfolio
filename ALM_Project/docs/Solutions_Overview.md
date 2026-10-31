@@ -1,5 +1,7 @@
 # Project Solution Overview: ALM Reporting & Analytics PoC
 
+> **Historical simulation:** The named bank and business setting are scenario material. Findings refer to saved synthetic report outputs, not a real institution or production deployment. For the implemented calculations and limits, see the repository [technical blueprint](../../PROJECT_BLUEPRINT.md#10-synthetic-banking-prototypes-and-portfolio-pdf).
+
 - **Project:** Automated ALM Reporting & NII Sensitivity Analysis
 - **Client:** Indus National Bank (INB)
 - **Author:** [Your Name], Business Analyst, EXL
