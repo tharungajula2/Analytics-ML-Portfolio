@@ -1,6 +1,6 @@
 # Analytics & ML Portfolio — technical blueprint
 
-This is a source-grounded guide to the repository as it exists. **“Implemented” means code is present; “saved output” means a notebook or report contains a prior result; neither means a fresh run was performed.** There is no shared pipeline spanning all projects. The two credit-risk notebooks form a sequence; the CartPole notebooks form an experiment family. Other notebooks are independent studies. The [README](README.md) is the short navigation guide.
+This is a source-grounded guide to the repository as it exists. **“Implemented” means code is present; “saved output” means a notebook or report contains a prior result. Fresh runs are identified explicitly.** There is no shared pipeline spanning all projects. The two original credit-risk notebooks form a sequence, with a separate corrected reference; the CartPole notebooks form an experiment family. Other notebooks are independent studies. The [README](README.md) is the short navigation guide.
 
 ## 1. Portfolio architecture and evidence
 
@@ -54,7 +54,23 @@ Zero shares require smoothing. A positive WoE here means a greater share of **go
 
 The modelling notebook fits a full logistic model, then a reduced model using p-value inspection. It scales coefficients into score points, sets reference-category points to zero, rounds scores, manually adjusts one point, reconstructs probabilities, and tabulates approval cutoffs. Saved holdout results are **AUROC 0.688277**, **Gini 0.376554 = 2·AUC−1**, and **KS 0.279013**. A displayed threshold-specific accuracy is **0.565813**; it is not a chosen operating point. With predicted `P(good)`, high scores correspond to safer loans.
 
-**Assumptions and limits.** The dataset and intermediate features are absent; local paths break fresh execution. Random splitting can mix loan vintages; an out-of-time test would better represent future underwriting. Candidate fields must be audited for availability at application time. Fine bins may be unstable; p-value selection is exploratory; no calibration, population stability, fairness, reject inference, or external validation is demonstrated. The scorecard is a learning artifact, not a deployable lending policy.
+**Assumptions and limits.** The dataset and intermediate features are absent; local paths break fresh execution. Random splitting can mix loan vintages; an out-of-time test would better represent future underwriting. Candidate fields must be audited for availability at application time. Fine bins may be unstable; p-value selection is exploratory; no calibration, population stability, fairness, reject inference, or external validation is demonstrated. The saved scorecard table in modelling cell 91 contains `NaN` coefficients, and saved scored-loan outputs in cells 122–123 are `NaN`; the historical scoring demonstration is not a validated points-to-PD calculation. The scorecard is a learning artifact, not a deployable lending policy.
+
+### Separate corrected scorecard reference (synthetic-tested)
+
+The [corrected reference and reproduction guide](credit_risk_corrected/README.md) preserve both notebooks and require a canonical decision-time plus dated-servicing input. The original 75-column CSV does not supply a verified exact decision date or first 90+ DPD/charge-off event date, and it is absent locally; **no real-data PD was fitted**. The [strict contract](credit_risk_corrected/contract.py) uses a 12-calendar-month window, excludes censored loans, and places explicit label-observation gaps between training, validation and test vintages. Only six declared borrower/application fields can enter the model; their actual decision-time availability still requires source review.
+
+```mermaid
+flowchart LR
+  A["Verified decision-time and dated servicing records"] --> B["12-month bad label; censor incomplete follow-up"]
+  B --> C["Chronological train / validation / test with label gaps"]
+  C --> D["Train-only WoE bins and regularized logistic PD"]
+  D --> E["Frozen mappings on validation and test"]
+  E --> F["AUC, KS, Brier, calibration, PSI"]
+  D --> G["Good:bad odds → points score → PD"]
+```
+
+The [model](credit_risk_corrected/model.py) smooths each train-bin good/bad count, computes `WoE_b = ln(P(b|good)/P(b|bad))` and `IV = Σ_b (P(b|good)−P(b|bad))×WoE_b`, then fits `logit(P(bad|x)) = β0 + Σ_j βj WoE_j(x)` with L2 regularization on slopes. With factor `20/ln(2)`, base score 600 and base good:bad odds 50:1, `score = 600 − factor × [logit(PD) + ln(50)]`. Higher scores mean lower PD; an exact component sum and inverse score check replace manual points adjustment. Calibration and PSI bins are fixed on training predictions. The [configuration](credit_risk_corrected/config.json) and [synthetic tests](credit_risk_corrected/test_pipeline.py) are reproducible with Python 3.10+ and no third-party packages. The default CLI refuses an input without a verified source name and SHA-256. This is a **tested modelling framework, not a validated production PD model**; these are software checks, not LendingClub performance metrics.
 
 ## 4. Forecasting antidiabetic prescriptions
 
