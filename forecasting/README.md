@@ -16,7 +16,7 @@ The exact dataset is Marco Peixeiro's [`AusAntidiabeticDrug.csv`](https://github
 3. From the repository root run `python forecasting/corrected_forecast.py`.
 4. Run `python -m unittest discover -s forecasting -p 'test_*.py' -v` for focused checks.
 
-No dependency installation or random sampling is required. The analysis is deterministic. `corrected_results.json` records the actual 36 holdout values, each forecast and each origin's errors. Re-running the script recreates it and the SVG.
+The runner and tests require Python 3.10 or later and only its standard library. Jupyter is optional for opening the notebook interactively; it is not needed to recalculate results. No dependency installation or random sampling is required. The analysis is deterministic. `corrected_results.json` records the actual 36 holdout values, each forecast and each origin's errors. Re-running the script recreates it and the SVG.
 
 ## Protocol and newly calculated results
 
